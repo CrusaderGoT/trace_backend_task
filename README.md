@@ -35,18 +35,15 @@ This project simulates part of a compliance-focused agricultural data pipeline w
 
 ```text
 .
-├── app/
-│   ├── main.py
-│   ├── models.py
-│   ├── schemas.py
-│   ├── exceptions.py
-│   └── store.py
-│
-├── tests/
-│   └── test_farm_registration.py
-│
-├── requirements.txt
-└── README.md
+├── .gitignore
+├── python-version
+├── README.md
+├── debug.py
+├── main.py
+├── part_c.txt
+├── pyproject.toml
+├── test_main.py
+└── uv.lock
 ```
 
 ---
@@ -151,37 +148,29 @@ POST /api/v1/farms/register
 
 ```bash
 git clone <repository-url>
-cd trace-farm-api
+cd trace_backend_task
 ```
 
 ---
 
-## 2. Create Virtual Environment
+## 2. Install Dependencies
 
 ```bash
-python -m venv venv
+uv sync
 ```
 
-### Activate Environment
+---
+
+## 3. Activate environment
 
 #### Windows
-
 ```bash
-venv\Scripts\activate
+.venv/source/activate
 ```
 
-#### Linux / macOS
-
+#### Linux
 ```bash
-source venv/bin/activate
-```
-
----
-
-## 3. Install Dependencies
-
-```bash
-pip install -r requirements.txt
+source venv/source/activate
 ```
 
 ---
@@ -189,7 +178,11 @@ pip install -r requirements.txt
 ## 4. Run Development Server
 
 ```bash
-uvicorn app.main:app --reload
+# To run Part A.
+fastapi dev main.py
+
+# To run Part B
+fastapi dev debug.py
 ```
 
 Server runs at:
