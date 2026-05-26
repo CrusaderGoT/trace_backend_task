@@ -1,0 +1,20 @@
+1. Idempotent Duplicate Handling
+
+A duplicate check alone is not fully idempotent because it only detects repeated submissions after they arrive. At scale, concurrent retries can still create race conditions where two identical requests pass validation before either is stored. To make the endpoint truly idempotent, I would introduce an idempotency key generated client-side per submission attempt, typically a UUID attached in a header such as `Idempotency-Key`.
+
+The backend would store the key alongside the request fingerprint and response. If the same request is retried due to timeout or unstable connectivity, the API would return the original successful response instead of reprocessing the submission. This guarantees safe retries without duplicate side effects.
+
+I would also enforce a database-level unique constraint on `farmer_id` and use atomic transactions to prevent concurrent inserts. For distributed systems, Redis or a dedicated idempotency store with expiration windows can coordinate retries across multiple API instances.
+
+This approach improves reliability for field agents operating offline or on unstable networks while preserving compliance data integrity and preventing accidental duplication.
+
+
+2. Risks of Trusting Client-Supplied Timestamps
+
+Trusting device-supplied timestamps creates major integrity risks in compliance systems because client clocks can be incorrect, manipulated, or intentionally falsified. A field agent’s device may have the wrong timezone, inaccurate system time, or altered timestamps to bypass operational rules, backdate submissions, or fabricate evidence of timely inspections.
+
+In a compliance context, timestamps are often part of the audit trail, so unreliable times undermine traceability and legal defensibility. For example, a fraudulent agent could submit data days later while making it appear collected onsite in real time.
+
+To address this, I would treat `submitted_at` as informational metadata rather than the authoritative system timestamp. The backend should generate its own trusted `received_at` or `created_at` timestamp using server time in UTC. Both timestamps can be stored separately for auditing and anomaly detection.
+
+I would also validate timestamp drift, such as rejecting submissions excessively far in the future or past, and log suspicious discrepancies for review. In higher-assurance systems, device attestation, signed payloads, and GPS/time consistency checks can further strengthen trustworthiness.
