@@ -28,6 +28,7 @@ This project simulates part of a compliance-focused agricultural data pipeline w
 * Pydantic v2
 * Pytest
 * Uvicorn
+* uv package manager
 
 ---
 
@@ -144,7 +145,19 @@ POST /api/v1/farms/register
 
 # Running the Project
 
-## 1. Clone Repository
+## 1. Set up uv
+
+### Windows
+```powershell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+### Linux
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+## 2. Clone Repository
 
 ```bash
 git clone <repository-url>
@@ -153,7 +166,7 @@ cd trace_backend_task
 
 ---
 
-## 2. Install Dependencies
+## 3. Install Dependencies
 
 ```bash
 uv sync
@@ -161,7 +174,7 @@ uv sync
 
 ---
 
-## 3. Activate environment
+## 4. Activate environment
 
 #### Windows
 ```bash
@@ -175,7 +188,7 @@ source venv/source/activate
 
 ---
 
-## 4. Run Development Server
+## 5. Run Development Server
 
 ```bash
 # To run Part A.
